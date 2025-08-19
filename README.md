@@ -1,15 +1,12 @@
-# Random Photo/Video Viewer
+# HAPPY BIRTHDAY DEAN!!! 
 
-A simple web application that displays random photos and videos from a folder.
+## Setup (One time)
+There is a little tricky stuff to get this working but I promise it is worth it!
+1. Download this folder
+1. Install [Node.js](https://nodejs.org/)
 
-## Setup
-
-1. Make sure you have [Node.js](https://nodejs.org/) installed
-2. Place your photos/videos in the `photos` directory (supports .jpg, .jpeg, .png, .gif, .mp4)
-
-## How to Run
-
-1. Open a terminal in the project directory
+## How to Run (Every time)
+1. Open a terminal in the project directory (The file you downloaded from github)
 2. Run the following commands:
    ```bash
    npm install
@@ -17,13 +14,6 @@ A simple web application that displays random photos and videos from a folder.
    ```
 3. Open your browser and go to: http://localhost:3000
 
-## Features
-- Automatically detects all media files in the `photos` directory
-- Supports both images and videos
-- Simple one-command setup and launch
-- No need to manually update file lists
-
-## Adding More Media
-1. Simply add your media files to the `photos` directory
-2. The app will automatically detect and include them
-3. Refresh the page to see the new files
+## Rules
+1. Do not view the any of the folder or file contents
+2. Have a great birthday
