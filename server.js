@@ -91,7 +91,7 @@ app.get('/api/search', async (req, res) => {
 });
 
 // Serve the main HTML file for all other routes
-app.get('*', (req, res) => {
+app.get('/{*any}', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 

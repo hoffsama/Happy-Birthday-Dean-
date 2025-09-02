@@ -10,6 +10,7 @@ There is a little tricky stuff to get this working but I promise it is worth it!
 2. Run the following commands:
    ```bash
    npm install
+   npm install express
    npm start
    ```
 3. Open your browser and go to: http://localhost:3000
