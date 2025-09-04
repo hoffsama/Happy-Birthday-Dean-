@@ -19,7 +19,7 @@ function getFilesFromDir(dir) {
                 }
                 return reject(err);
             }
-            
+
             const mediaFiles = files
                 .filter(file => {
                     const ext = path.extname(file).toLowerCase();
@@ -29,7 +29,7 @@ function getFilesFromDir(dir) {
                     name: file,
                     path: path.join(dir, file).replace(/\\/g, '/').replace(/^.*?\/photos/, '/photos')
                 }));
-                
+
             resolve(mediaFiles);
         });
     });
