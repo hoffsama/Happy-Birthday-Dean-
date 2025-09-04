@@ -6,11 +6,16 @@ const searchBtn = document.getElementById('searchBtn');
 let photos = [];
 let currentPhoto = '';
 
-// Function to fetch all photos from the API
+// Function to fetch all photos from the API or static JSON
 async function loadPhotos() {
+    // In production (GitHub Pages), load from photos.json
+    // In development, try the API endpoint first, then fall back to photos.json
+    const isProduction = window.location.hostname.includes('github.io');
+    const apiUrl = isProduction ? 'photos.json' : '/api/photos';
+    
     try {
-        console.log('Fetching photos from /api/photos');
-        const response = await fetch('/api/photos');
+        console.log(`Fetching photos from ${apiUrl}`);
+        const response = await fetch(apiUrl);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -21,6 +26,20 @@ async function loadPhotos() {
         return data; // Returns { regular: [...], hidden: [...] }
     } catch (error) {
         console.error('Error loading photos:', error);
+        
+        // If we're not in production and the API failed, try loading from photos.json
+        if (!isProduction) {
+            try {
+                console.log('Trying to load from photos.json as fallback');
+                const fallbackResponse = await fetch('photos.json');
+                if (fallbackResponse.ok) {
+                    return await fallbackResponse.json();
+                }
+            } catch (e) {
+                console.error('Fallback loading failed:', e);
+            }
+        }
+        
         return { regular: [], hidden: [] };
     }
 }
@@ -29,11 +48,23 @@ async function loadPhotos() {
 function getRandomPhoto() {
     if (photos.length === 0) return 'placeholder.jpg';
     const randomIndex = Math.floor(Math.random() * photos.length);
-    // Check if the photo path already includes 'photos/' to avoid duplicating it
-    if (typeof photos[randomIndex] === 'object' && photos[randomIndex].path) {
-        return photos[randomIndex].path;
+    
+    // Handle both object format {path, name} and string format
+    const photo = photos[randomIndex];
+    if (typeof photo === 'object' && photo.path) {
+        // If the path is already a full URL or starts with http, use it as is
+        if (photo.path.startsWith('http') || photo.path.startsWith('//')) {
+            return photo.path;
+        }
+        // Otherwise, ensure it's a relative path
+        return photo.path.startsWith('/') ? photo.path : `/${photo.path}`;
     }
-    return `photos/${photos[randomIndex]}`;
+    
+    // Handle string format
+    const photoPath = typeof photo === 'string' ? photo : 'placeholder.jpg';
+    return photoPath.startsWith('photos/') || photoPath.startsWith('/photos/') 
+        ? photoPath 
+        : `photos/${photoPath}`;
 }
 
 // Function to update the displayed photo with a fade effect

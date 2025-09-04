@@ -2,7 +2,6 @@
   "name": "happy-birthday-dean-",
   "version": "1.0.0",
   "description": "There is a little tricky stuff to get this working but I promise it is worth it!\r 1. Download this folder\r 1. Install [Node.js](https://nodejs.org/)",
-  "homepage": "https://github.com/hoffsama/Happy-Birthday-Dean-#readme",
   "bugs": {
     "url": "https://github.com/hoffsama/Happy-Birthday-Dean-/issues"
   },
@@ -16,8 +15,12 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node generate-photos-json.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d ."
   },
+  "homepage": "https://hoffsama.github.io/Happy-Birthday-Dean-",
   "dependencies": {
     "accepts": "^2.0.0",
     "body-parser": "^2.2.0",

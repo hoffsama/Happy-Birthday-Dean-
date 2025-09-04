@@ -1,20 +1,41 @@
 # HAPPY BIRTHDAY DEAN!!! 
 
-## Setup (One time)
-There is a little tricky stuff to get this working but I promise it is worth it!
-1. Download this folder
-1. Install [Node.js](https://nodejs.org/)
+## Local Development
 
-## How to Run (Every time)
-1. Open a terminal in the project directory (The file you downloaded from github)
-2. Run the following commands:
+### Setup (One time)
+1. Clone this repository
+2. Install [Node.js](https://nodejs.org/)
+3. Install dependencies:
    ```bash
    npm install
-   npm install express
-   npm start
    ```
-3. Open your browser and go to: http://localhost:3000
+
+### Running Locally
+```bash
+npm start
+```
+Then open your browser and go to: http://localhost:3000
+
+## Deploying to GitHub Pages
+
+1. First, install gh-pages:
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+2. Generate the photos.json file:
+   ```bash
+   npm run build
+   ```
+
+3. Deploy to GitHub Pages:
+   ```bash
+   npm run deploy
+   ```
+
+4. After deployment, your site will be live at:
+   https://hoffsama.github.io/Happy-Birthday-Dean-
 
 ## Rules
-1. Do not view the any of the folder or file contents
+1. Do not view any of the folder or file contents
 2. Have a great birthday
