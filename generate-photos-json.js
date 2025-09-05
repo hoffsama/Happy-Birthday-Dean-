@@ -9,12 +9,22 @@ async function generatePhotosJson() {
     try {
       return fs.readdirSync(dir)
         .filter(file => /\.(jpg|jpeg|png|gif|mp4)$/i.test(file))
-        .map(file => ({
-          name: file,
-          path: path.relative(__dirname, path.join(dir, file)).replace(/\\/g, '/')
-        }));
+        .map(file => {
+          // Get the relative path and normalize it
+          const relativePath = path.relative(__dirname, path.join(dir, file));
+          // Convert backslashes to forward slashes and remove any leading slashes
+          const normalizedPath = relativePath.replace(/\\/g, '/').replace(/^\/+/, '');
+          
+          return {
+            name: file,
+            path: normalizedPath
+          };
+        });
     } catch (error) {
-      if (error.code === 'ENOENT') return [];
+      if (error.code === 'ENOENT') {
+        console.log(`Directory not found: ${dir}`);
+        return [];
+      }
       throw error;
     }
   };
@@ -24,11 +34,18 @@ async function generatePhotosJson() {
     hidden: getFiles(hiddenDir)
   };
 
+  // Create the output file path
+  const outputPath = path.join(__dirname, 'photos.json');
+  
+  // Write the file
   fs.writeFileSync(
-    path.join(__dirname, 'photos.json'),
+    outputPath,
     JSON.stringify(photos, null, 2)
   );
-  console.log('Generated photos.json');
+  
+  console.log(`Generated ${outputPath}`);
+  console.log('Regular photos:', photos.regular.length);
+  console.log('Hidden photos:', photos.hidden.length);
 }
 
 generatePhotosJson().catch(console.error);

@@ -8,38 +8,39 @@ let currentPhoto = '';
 
 // Function to fetch all photos from the API or static JSON
 async function loadPhotos() {
-    // In production (GitHub Pages), load from photos.json
-    // In development, try the API endpoint first, then fall back to photos.json
-    const isProduction = window.location.hostname.includes('github.io');
-    const apiUrl = isProduction ? 'photos.json' : '/api/photos';
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const basePath = isGitHubPages ? '/Happy-Birthday-Dean-' : '';
     
+    // Try to load from photos.json first (works for GitHub Pages)
     try {
-        console.log(`Fetching photos from ${apiUrl}`);
-        const response = await fetch(apiUrl);
-        
+        const response = await fetch(`${basePath}/photos.json`);
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Photos loaded from photos.json:', data);
+            return data;
+        }
+    } catch (e) {
+        console.log('Could not load from photos.json, trying API...');
+    }
+    
+    // Fall back to API if photos.json not found (for local development)
+    try {
+        const response = await fetch(`${basePath}/api/photos`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
         const data = await response.json();
-        console.log('Photos loaded:', data);
-        return data; // Returns { regular: [...], hidden: [...] }
+        console.log('Photos loaded from API:', data);
+        // Update data to handle new path format
+        data.regular = data.regular.map(photo => {
+            if (typeof photo === 'string') {
+                return { path: `photos/${photo}`, name: photo };
+            }
+            return photo; // Already in the correct format
+        });
+        return data;
     } catch (error) {
         console.error('Error loading photos:', error);
-        
-        // If we're not in production and the API failed, try loading from photos.json
-        if (!isProduction) {
-            try {
-                console.log('Trying to load from photos.json as fallback');
-                const fallbackResponse = await fetch('photos.json');
-                if (fallbackResponse.ok) {
-                    return await fallbackResponse.json();
-                }
-            } catch (e) {
-                console.error('Fallback loading failed:', e);
-            }
-        }
-        
         return { regular: [], hidden: [] };
     }
 }
@@ -51,20 +52,35 @@ function getRandomPhoto() {
     
     // Handle both object format {path, name} and string format
     const photo = photos[randomIndex];
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const basePath = isGitHubPages ? '/Happy-Birthday-Dean-' : '';
+    
+    let photoPath;
+    
     if (typeof photo === 'object' && photo.path) {
         // If the path is already a full URL or starts with http, use it as is
         if (photo.path.startsWith('http') || photo.path.startsWith('//')) {
             return photo.path;
         }
-        // Otherwise, ensure it's a relative path
-        return photo.path.startsWith('/') ? photo.path : `/${photo.path}`;
+        // Handle GitHub Pages path
+        photoPath = photo.path.startsWith('/') ? photo.path : `/${photo.path}`;
+    } else {
+        // Handle string format
+        photoPath = typeof photo === 'string' ? photo : 'placeholder.jpg';
+        if (!photoPath.startsWith('photos/') && !photoPath.startsWith('/photos/')) {
+            photoPath = `photos/${photoPath}`;
+        }
     }
     
-    // Handle string format
-    const photoPath = typeof photo === 'string' ? photo : 'placeholder.jpg';
-    return photoPath.startsWith('photos/') || photoPath.startsWith('/photos/') 
-        ? photoPath 
-        : `photos/${photoPath}`;
+    // Ensure consistent path format for GitHub Pages
+    if (isGitHubPages && !photoPath.startsWith('http')) {
+        // Remove any leading slashes to prevent double slashes
+        photoPath = photoPath.replace(/^\/+/, '');
+        // Add base path for GitHub Pages
+        photoPath = `${basePath}/${photoPath}`.replace(/\/+/, '/');
+    }
+    
+    return photoPath;
 }
 
 // Function to update the displayed photo with a fade effect

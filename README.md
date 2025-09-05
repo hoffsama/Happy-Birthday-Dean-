@@ -1,41 +1,13 @@
 # HAPPY BIRTHDAY DEAN!!! 
 
-## Local Development
+## I love you 
 
-### Setup (One time)
-1. Clone this repository
-2. Install [Node.js](https://nodejs.org/)
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-### Running Locally
-```bash
-npm start
-```
-Then open your browser and go to: http://localhost:3000
-
-## Deploying to GitHub Pages
-
-1. First, install gh-pages:
-   ```bash
-   npm install --save-dev gh-pages
-   ```
-
-2. Generate the photos.json file:
-   ```bash
-   npm run build
-   ```
-
-3. Deploy to GitHub Pages:
-   ```bash
-   npm run deploy
-   ```
-
-4. After deployment, your site will be live at:
-   https://hoffsama.github.io/Happy-Birthday-Dean-
-
-## Rules
-1. Do not view any of the folder or file contents
+## Rules (Very real rules, you break these break the fun)
+1. Do not view any of the folder or file contents in github
+2. If you find a place you can view all of the photos DONT
 2. Have a great birthday
+
+##### p.s. I used a lot of AI to make this, so dont get too excited about my coding skills lol
+
+### I love you so so much, I hope this present is 1/100000th as unique, epic, fun, and handsome as you are.
+
