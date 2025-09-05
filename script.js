@@ -73,6 +73,7 @@ function getRandomPhoto() {
             const pathParts = photoPath.split('/');
             const encodedParts = pathParts.map(part => encodeURIComponent(part));
             photoPath = `/Happy-Birthday-Dean-/${encodedParts.join('/')}`;
+            console.log('GitHub Pages photo path:', photoPath);
         } else {
             // For local development, use relative path
             photoPath = photoPath.startsWith('/') ? photoPath : `/${photoPath}`;
@@ -122,22 +123,46 @@ function updatePhoto(photoPath = '') {
 
 // Function to search for hidden photos
 async function searchPhotos(query) {
-    try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const results = await response.json();
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    
+    if (isGitHubPages) {
+        // For GitHub Pages, search through the loaded photos data
+        const data = await loadPhotos();
+        const allPhotos = [...(data.regular || []), ...(data.hidden || [])];
+        
+        const results = allPhotos.filter(photo => 
+            photo.name.toLowerCase().includes(query.toLowerCase())
+        );
         
         if (results.length > 0) {
             // Show the first matching photo
-            updatePhoto(results[0].path);
+            const photo = results[0];
+            const pathParts = photo.path.split('/');
+            const encodedParts = pathParts.map(part => encodeURIComponent(part));
+            const photoPath = `/Happy-Birthday-Dean-/${encodedParts.join('/')}`;
+            updatePhoto(photoPath);
         } else {
             alert('No matching photos found');
         }
-    } catch (error) {
-        console.error('Search error:', error);
-        alert('Error searching for photos');
+    } else {
+        // For local development, use the API
+        try {
+            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const results = await response.json();
+            
+            if (results.length > 0) {
+                // Show the first matching photo
+                updatePhoto(results[0].path);
+            } else {
+                alert('No matching photos found');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            alert('Error searching for photos');
+        }
     }
 }
 
