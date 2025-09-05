@@ -53,7 +53,6 @@ function getRandomPhoto() {
     // Handle both object format {path, name} and string format
     const photo = photos[randomIndex];
     const isGitHubPages = window.location.hostname.includes('github.io');
-    const basePath = isGitHubPages ? '/Happy-Birthday-Dean-' : '';
     
     let photoPath;
     
@@ -62,22 +61,34 @@ function getRandomPhoto() {
         if (photo.path.startsWith('http') || photo.path.startsWith('//')) {
             return photo.path;
         }
-        // Handle GitHub Pages path
-        photoPath = photo.path.startsWith('/') ? photo.path : `/${photo.path}`;
+        
+        // Use the path from photos.json directly
+        photoPath = photo.path;
+        
+        // For GitHub Pages, ensure proper encoding and path structure
+        if (isGitHubPages) {
+            // Remove the repository name from the path if it exists
+            photoPath = photoPath.replace('Happy-Birthday-Dean-/', '');
+            // Encode the filename properly for URLs
+            const pathParts = photoPath.split('/');
+            const encodedParts = pathParts.map(part => encodeURIComponent(part));
+            photoPath = `/Happy-Birthday-Dean-/${encodedParts.join('/')}`;
+        } else {
+            // For local development, use relative path
+            photoPath = photoPath.startsWith('/') ? photoPath : `/${photoPath}`;
+        }
     } else {
         // Handle string format
         photoPath = typeof photo === 'string' ? photo : 'placeholder.jpg';
         if (!photoPath.startsWith('photos/') && !photoPath.startsWith('/photos/')) {
             photoPath = `photos/${photoPath}`;
         }
-    }
-    
-    // Ensure consistent path format for GitHub Pages
-    if (isGitHubPages && !photoPath.startsWith('http')) {
-        // Remove any leading slashes to prevent double slashes
-        photoPath = photoPath.replace(/^\/+/, '');
-        // Add base path for GitHub Pages
-        photoPath = `${basePath}/${photoPath}`.replace(/\/+/, '/');
+        
+        if (isGitHubPages) {
+            const pathParts = photoPath.split('/');
+            const encodedParts = pathParts.map(part => encodeURIComponent(part));
+            photoPath = `/Happy-Birthday-Dean-/${encodedParts.join('/')}`;
+        }
     }
     
     return photoPath;
